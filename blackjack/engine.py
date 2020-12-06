@@ -33,7 +33,7 @@ class Deck:
         random.shuffle(self.deck)
 
     def deal(self):
-        pass
+        self.deck.pop()
 
 
 class Player:
@@ -56,10 +56,30 @@ class Hand:
 
     def add_card(self, card):
         self.cards.append(card)
+        print(type(Card))
         if card.rank == 'Ace':
-            pass
+            self.contain_ace = True
         else:
             self.curr_val += card.value
+
+    def handle_ace(self):
+        values = (self.curr_val+1, self.curr_val+11)
+        print(f"")
+
+    def make_bet(self, player, bet_amt):
+        if player.money > bet_amt:
+            print(f"Bet Made: ${bet_amt}")
+            self.bet += bet_amt
+        else:
+            raise ValueError("Insufficient Funds")
+
+    def display_hand(self, hide_cards=False):
+        display = ''
+        if hide_cards != False:
+            display = '\n'.join([card.__str__() for card in self.cards])
+        else:
+            display = self.cards[1].__str__()
+        return display
 
 
 class Game:
@@ -67,15 +87,17 @@ class Game:
     def __init__(self):
         self.player = None
         self.deck = None
+        self.hand = 1
 
     def start_game(self):
         '''
         1. Create Player (starts with $50)
         2. Play Game Until Player Quits
-        3. Create a Hand, 
+        3. Create a Hand,
         '''
         print('Game Started')
         playerName = None
+        game_on = True
         while type(playerName) != str:
             try:
                 playerName = input('Please enter a player\n')
@@ -83,3 +105,29 @@ class Game:
                 print("Please enter a name")
         self.player = Player(playerName)
         print(self.player)
+        self.deck = Deck()
+        while game_on:
+            game_on = self.play_hand()
+
+    def play_hand(self):
+        self.deck.shuffle()
+        dealer = Hand()
+        player_hand = Hand()
+        while True:
+            try:
+                bet_amt = int(input("Please Enter A Bet:\n"))
+                player_hand.make_bet(self.player, bet_amt)
+            except:
+                print("Invalid bet amount")
+                continue
+            else:
+                break
+        print('Dealing Cards....')
+        player_hand.add_card(self.deck.deal())
+        dealer.add_card(self.deck.deal())
+        player_hand.add_card(self.deck.deal())
+        dealer.add_card(self.deck.deal())
+        print('Reveal Hands')
+        print(player_hand.display_hand())
+        print(dealer.display_hand(True))
+        return False
