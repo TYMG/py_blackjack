@@ -33,7 +33,7 @@ class Deck:
         random.shuffle(self.deck)
 
     def deal(self):
-        self.deck.pop()
+        return self.deck.pop()
 
 
 class Player:
@@ -56,7 +56,6 @@ class Hand:
 
     def add_card(self, card):
         self.cards.append(card)
-        print(type(Card))
         if card.rank == 'Ace':
             self.contain_ace = True
         else:
@@ -75,10 +74,26 @@ class Hand:
 
     def display_hand(self, hide_cards=False):
         display = ''
-        if hide_cards != False:
+        if hide_cards == False:
             display = '\n'.join([card.__str__() for card in self.cards])
         else:
             display = self.cards[1].__str__()
+        return display
+
+    # What about multiple  aces???
+    def display_value(self):
+        display = ''
+        val = 0
+        if self.contain_ace:
+            for card in self.cards:
+                if card.rank != 'Ace':
+                    val += card.value
+            print(val)
+            display = f'Value is either {val+1} or {val+11}'
+        else:
+            for card in self.cards:
+                val += card.value
+            display = f'Value is {val}'
         return display
 
 
