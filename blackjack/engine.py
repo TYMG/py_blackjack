@@ -58,12 +58,24 @@ class Hand:
         self.cards.append(card)
         if card.rank == 'Ace':
             self.contain_ace = True
-        else:
-            self.curr_val += card.value
+        self.curr_val += card.value
 
     def handle_ace(self):
-        values = (self.curr_val+1, self.curr_val+11)
-        print(f"")
+        val = self.curr_val
+        lo = val-10
+        hi = val
+        updated_curr_val = None
+        if hi < 21:
+            while updated_curr_val != lo and updated_curr_val != hi:
+                updated_curr_val = int(input(f'Select a val {lo} or {hi}\n'))
+                print(updated_curr_val)
+                if updated_curr_val != lo and updated_curr_val != hi:
+                    print('Incorrect Value\n')
+        else:
+            self.contain_ace = False
+            updated_curr_val = lo
+        self.curr_val = updated_curr_val
+        print(f'Current hand value: {self.curr_val}')
 
     def make_bet(self, player, bet_amt):
         if player.money > bet_amt:
@@ -89,7 +101,7 @@ class Hand:
                 if card.rank != 'Ace':
                     val += card.value
             print(val)
-            display = f'Value is either {val+1} or {val+11}'
+            display = f'Value is either {val-10} or {val}'
         else:
             for card in self.cards:
                 val += card.value
@@ -143,6 +155,41 @@ class Game:
         player_hand.add_card(self.deck.deal())
         dealer.add_card(self.deck.deal())
         print('Reveal Hands')
-        print(player_hand.display_hand())
         print(dealer.display_hand(True))
+        print(player_hand.display_hand())
+        print(player_hand.display_value())
+        self.player_take_cards(player_hand)
+        print(player_hand.display_hand() +
+              f"\nPlayer stands at {player_hand.curr_val}")
         return False
+
+    def hit_question(self, hand):
+        resp = input(
+            f'Do you want to hit? Current Val: {hand.curr_val} (Yes or No)\n')
+        while resp != 'Yes' and resp != 'No':
+            resp = input(
+                f'Incorrect Response\nDo you want to hit? Current Val: {hand.curr_val} (Yes or No)\n')
+        return resp
+
+    def player_take_cards(self, hand):
+        while hand.curr_val < 21:
+            resp = self.hit_question(hand)
+            if resp == 'No':
+                break
+            card = self.deck.deal()
+            print(card)
+            hand.add_card(card)
+            if hand.contain_ace == True:
+                hand.handle_ace()
+            print(f'Current Val: {hand.curr_val}\n')
+
+    def dealer_take_cards(self, dealer):
+        while dealer.curr_val < 17:
+            card = self.deck.deal()
+            if dealer.curr_val + card.value > 21 and dealer.contain_ace == True:
+                dealer.curr_val -= 10
+                dealer.add_card(card)
+                dealer.contain_ace = False
+            else:
+                dealer.add_card(card)
+            print(f'Dealer Value {dealer.curr_val}')

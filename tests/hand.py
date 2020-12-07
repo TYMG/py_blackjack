@@ -48,6 +48,18 @@ class HandTestEngine(unittest.TestCase):
         print("Player Hand\n" + player_hand.display_hand()+'\n')
         print(player_hand.display_value())
 
+    def test_handle_ace(self):
+        print('\n'+'*****'*20)
+        print('Test: Test Handle Ace Method\n')
+        deck = engine.Deck()
+        player_hand = engine.Hand()
+        player_hand.add_card(deck.deal())
+        player_hand.add_card(deck.deal())
+        print("Player Hand\n" + player_hand.display_hand()+'\n')
+        player_hand.handle_ace()
+        self.assertTrue(player_hand.curr_val ==
+                        21 or player_hand.curr_val == 11)
+
 
 if __name__ == '__main__':
     unittest.main()
