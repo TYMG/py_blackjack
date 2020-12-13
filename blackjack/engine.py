@@ -157,12 +157,7 @@ class Game:
         dealer.add_card(self.deck.deal())
         player_hand.add_card(self.deck.deal())
         dealer.add_card(self.deck.deal())
-        print('Reveal Hands')
-        print('\nDealer Hand\n')
-        print(dealer.display_hand(True))
-        print('\nPlayer Hand\n')
-        print(player_hand.display_hand())
-        print(player_hand.display_value())
+        self.print_hands(dealer, player_hand)
         self.player_take_cards(player_hand)
         print(player_hand.display_hand() +
               f"\nPlayer stands at {player_hand.curr_val}")
@@ -172,6 +167,14 @@ class Game:
         print(dealer.display_hand())
         self.wrap_up_hand(self.player, player_hand, dealer)
         return self.another_hand_question(self.player)
+
+    def print_hands(self, dealer, player_hand):
+        print('Reveal Hands')
+        print('\nDealer Hand\n')
+        print(dealer.display_hand(True))
+        print('\nPlayer Hand\n')
+        print(player_hand.display_hand())
+        print(player_hand.display_value())
 
     def hit_question(self, hand):
         resp = input(
