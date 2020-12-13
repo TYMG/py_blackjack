@@ -81,7 +81,7 @@ class Hand:
         print(f'Current hand value: {self.curr_val}')
 
     def make_bet(self, player, bet_amt):
-        if player.money > bet_amt:
+        if player.money >= bet_amt:
             print(f"Bet Made: ${bet_amt}")
             self.bet += bet_amt
         else:
@@ -215,6 +215,10 @@ class Game:
             print(f"{player.name} wins!!")
             player.update_money(player_hand.bet)
         else:
+            if(player_hand.curr_val > 22):
+                print("Player Busts!!\n")
+            else:
+                print("Dealer has a better hand!!\n")
             print(f"Dealer wins!!")
             player.update_money(player_hand.bet*-1)
 
